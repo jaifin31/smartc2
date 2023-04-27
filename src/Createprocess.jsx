@@ -6,13 +6,38 @@ function CreateProcess() {
   const [processName, setProcessName] = useState('');
   const [processDescription, setProcessDescription] = useState('');
   const [processes, setProcesses] = useState([]);
+  const [processNameError, setProcessNameError] = useState('');
+  const [processDescriptionError, setProcessDescriptionError] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (processName.trim() === '') {
+      setProcessNameError('Process name is required');
+      return;
+    }
+
+    if (processDescription.trim() === '') {
+      setProcessDescriptionError('Process description is required');
+      return;
+    }
+
     const newProcess = { name: processName, description: processDescription };
     setProcesses([...processes, newProcess]);
     setProcessName('');
     setProcessDescription('');
+    setProcessNameError('');
+    setProcessDescriptionError('');
+  };
+
+  const handleProcessNameChange = (event) => {
+    setProcessName(event.target.value);
+    setProcessNameError('');
+  };
+
+  const handleProcessDescriptionChange = (event) => {
+    setProcessDescription(event.target.value);
+    setProcessDescriptionError('');
   };
 
   return (
@@ -21,23 +46,27 @@ function CreateProcess() {
       <form onSubmit={handleSubmit}>
         <label>
           <h3>Process Name</h3>
-          <input type="text" value={processName} onChange={(event) => setProcessName(event.target.value)} />
+          <input type="text" value={processName} onChange={handleProcessNameChange} />
         </label>
         <br />
+        <div style={{ color: 'red' }}>{processNameError}</div>
         <label>
-         <h3>Description</h3> 
-          <input type="text" value={processDescription} onChange={(event) => setProcessDescription(event.target.value)} />
+          <h3>Description</h3>
+          <input type="text" value={processDescription} onChange={handleProcessDescriptionChange} />
         </label>
+        <br />
+        <div style={{ color: 'red' }}>{processDescriptionError}</div>
         <button type="submit">Submit</button>
       </form>
-      <table  className="table table-primary">
+      <br />
+      <table className="table table-info">
         <thead>
           <tr>
             <th>Process Name</th>
             <th>Description</th>
           </tr>
         </thead>
-        <tbody className='table table-striped'>
+        <tbody className="table table-success table-striped">
           {processes.map((process, index) => (
             <tr key={index}>
               <td>{process.name}</td>
